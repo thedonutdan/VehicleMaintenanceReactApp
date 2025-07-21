@@ -93,11 +93,25 @@ public class Vehicle {
         this.mileage = mileage;
     }
 
+    /* Adds a maintenance record to the vehicle, will update vehicle mileage if new */
     public void addMaintenance(MaintenanceRecord record) {
         maintenanceHistory.add(record);
         if (record.getMileage() > mileage) {
             mileage = record.getMileage();
         }
+    }
+
+    public String toString() {
+        return """
+                Vehicle[
+                id=%s,
+                vin=%s,
+                make=%s,
+                model=%s,
+                licensePlate=%s
+                mileage=%d
+                ]
+                """.formatted(id, VIN, make, model, licensePlate, mileage);
     }
 
     public boolean equals(Object obj) {
