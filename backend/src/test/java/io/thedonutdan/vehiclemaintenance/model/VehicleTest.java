@@ -75,4 +75,23 @@ public class VehicleTest {
         assertEquals(history.get(0), record);
         assertEquals(100000, v.getMileage());
     }
+
+    @Test
+    public void testSerializationDeserializationRoundTrip() throws IOException {
+        LocalDate date = LocalDate.of(2025, 7, 1);
+        ServiceType st = new ServiceType("Oil Change", 5000, Period.ofMonths(6));
+        MaintenanceRecord record = new MaintenanceRecord(date, st, 100000, null, null, "5W-30");
+        Vehicle original = new Vehicle("VIN1234", "Honda", "Civic", "555555", 10000, List.of(record));
+
+        String json = mapper.writeValueAsString(original);
+        Vehicle deserialized = mapper.readValue(json, Vehicle.class);
+
+        assertEquals(original.getId(), deserialized.getId());
+        assertEquals(original.getVIN(), deserialized.getVIN());
+        assertEquals(original.getMake(), deserialized.getMake());
+        assertEquals(original.getModel(), deserialized.getModel());
+        assertEquals(original.getMaintenanceHistory(), deserialized.getMaintenanceHistory());
+        assertEquals(original.getMileage(), deserialized.getMileage());
+        assertEquals(original.getLicensePlate(), deserialized.getLicensePlate());
+    }
 }
