@@ -1,0 +1,46 @@
+package io.thedonutdan.vehiclemaintenance.manager;
+
+import io.thedonutdan.vehiclemaintenance.DAO.VehicleDAO;
+import io.thedonutdan.vehiclemaintenance.model.MaintenanceRecord;
+import io.thedonutdan.vehiclemaintenance.model.Vehicle;
+
+import java.util.List;
+import java.util.UUID;
+
+public class VehicleManager {
+    private final VehicleDAO vehicleDAO;
+
+    public VehicleManager(VehicleDAO vehicleDAO) {
+        this.vehicleDAO = vehicleDAO;
+    }
+
+    public void addVehicle(Vehicle vehicle) {
+        vehicleDAO.insert(vehicle);
+    }
+
+    public Vehicle getVehicleById(UUID vehicleId, UUID userId) {
+        return vehicleDAO.findByIdAndUserId(vehicleId, userId);
+    }
+
+    public List<Vehicle> getVehiclesByUserId(UUID userId) {
+        return vehicleDAO.findByUserId(userId);
+    }
+
+    public void updateVehicle(UUID userId, Vehicle vehicle) {
+        vehicleDAO.update(userId, vehicle);
+    }
+
+    public void deleteVehicle(UUID userId, UUID vehicleId) {
+        vehicleDAO.delete(userId, vehicleId);
+    }
+
+    public void addMaintenanceRecord(UUID userId, UUID vehicleId, MaintenanceRecord record) {
+        Vehicle vehicle = vehicleDAO.findById(vehicleId);
+        if (vehicle == null) {
+            throw new IllegalArgumentException("Vehicle not found");
+        }
+
+        vehicle.addMaintenance(record);
+        vehicleDAO.update(userId, vehicle);
+    }
+}
