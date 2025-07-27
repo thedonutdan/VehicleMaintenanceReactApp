@@ -26,21 +26,21 @@ public class VehicleManager {
         return vehicleDAO.findByUserId(userId);
     }
 
-    public void updateVehicle(UUID userId, Vehicle vehicle) {
-        vehicleDAO.update(userId, vehicle);
+    public boolean updateVehicle(UUID userId, Vehicle vehicle) {
+        return vehicleDAO.update(userId, vehicle);
     }
 
-    public void deleteVehicle(UUID userId, UUID vehicleId) {
-        vehicleDAO.delete(userId, vehicleId);
+    public boolean deleteVehicle(UUID userId, UUID vehicleId) {
+        return vehicleDAO.delete(userId, vehicleId);
     }
 
-    public void addMaintenanceRecord(UUID userId, UUID vehicleId, MaintenanceRecord record) {
-        Vehicle vehicle = vehicleDAO.findById(vehicleId);
+    public boolean addMaintenanceRecord(UUID userId, UUID vehicleId, MaintenanceRecord record) {
+        Vehicle vehicle = vehicleDAO.findByIdAndUserId(vehicleId, userId);
         if (vehicle == null) {
-            throw new IllegalArgumentException("Vehicle not found");
+            return false;
         }
 
         vehicle.addMaintenance(record);
-        vehicleDAO.update(userId, vehicle);
+        return vehicleDAO.update(userId, vehicle);
     }
 }
