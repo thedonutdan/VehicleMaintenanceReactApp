@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+//TODO: move auth up to manager
 public class SQLiteVehicleDAO implements VehicleDAO {
     private final Connection conn;
 

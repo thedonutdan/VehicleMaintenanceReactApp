@@ -19,7 +19,7 @@ public class SQLiteUserDAO implements UserDAO{
     @Override
     public boolean insert(User user) {
         String query = """
-                INSERT INTO users (user_id, username, passwordHash) VALUES (?, ?, ?)
+                INSERT INTO users (user_id, username, password_hash) VALUES (?, ?, ?)
                 """;
         
         try (PreparedStatement stmt = conn.prepareStatement(query)) {
@@ -66,7 +66,7 @@ public class SQLiteUserDAO implements UserDAO{
     @Override
     public User findById(UUID userId) {
         String query = """
-                SELECT * FROM users WHERE username = ?
+                SELECT * FROM users WHERE user_id = ?
                 """;
         
         try (PreparedStatement stmt = conn.prepareStatement(query)) {
