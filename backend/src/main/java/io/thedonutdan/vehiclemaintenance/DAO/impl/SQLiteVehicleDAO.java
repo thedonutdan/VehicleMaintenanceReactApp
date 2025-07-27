@@ -6,12 +6,9 @@ import io.thedonutdan.vehiclemaintenance.model.ServiceType;
 import io.thedonutdan.vehiclemaintenance.model.Vehicle;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.SQLWarning;
-import java.sql.Statement;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
@@ -148,16 +145,110 @@ public class SQLiteVehicleDAO implements VehicleDAO {
 
     @Override
     public Vehicle findByIdAndUserId(UUID vehicleId, UUID userId) {
-        return new Vehicle();
+        String query = """
+                SELECT * FROM vehicles WHERE id = ? AND user_id = ?
+                """;
+
+        try (PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setString(1, vehicleId.toString());
+            stmt.setString(2, userId.toString());
+
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                Vehicle vehicle = new Vehicle();
+                vehicle.setId(UUID.fromString(rs.getString("id")));
+                vehicle.setUserId(UUID.fromString(rs.getString("user_id")));
+                vehicle.setVIN(rs.getString("vin"));
+                vehicle.setMake(rs.getString("make"));
+                vehicle.setModel(rs.getString("model"));
+                vehicle.setYear(rs.getInt("year"));
+                vehicle.setLicensePlate(rs.getString("license_plate"));
+                vehicle.setMileage(rs.getInt("mileage"));
+                vehicle.setMaintenanceHistory(getMaintenanceRecords(vehicleId));
+
+                return vehicle;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 
     @Override
     public boolean update(UUID userId, Vehicle vehicle) {
-        return false;
+        String deleteVehiclesQuery = """
+            DELETE FROM vehicles WHERE id = ? AND user_id = ?
+            """;
+        String deleteMaintenanceRecordsQuery = """
+            DELETE FROM maintenance_records WHERE vehicle_id = ?
+            """;
+
+        try {
+            conn.setAutoCommit(false);
+
+            try (PreparedStatement stmt = conn.prepareStatement(deleteMaintenanceRecordsQuery)) {
+                stmt.setString(1, vehicle.getId().toString());
+                stmt.executeUpdate();
+            }
+
+            try (PreparedStatement stmt = conn.prepareStatement(deleteVehiclesQuery)) {
+                stmt.setString(1, vehicle.getId().toString());
+                stmt.setString(2, userId.toString());
+
+                executeStrictUpdate(stmt, 1);
+            }
+
+            boolean insertSuccess = insert(vehicle);
+            if (!insertSuccess) {
+                throw new SQLException("Error re-inserting vehicle");
+            }
+
+            conn.commit();
+            return true;
+        } catch (SQLException e) {
+            try {
+                conn.rollback();
+            } catch (SQLException rollBackEx) {
+                rollBackEx.printStackTrace();
+            }
+            e.printStackTrace();
+            return false;
+        }
     }
 
     @Override
     public boolean delete(UUID userId, UUID id) {
+        String vehiclesQuery = """
+                DELETE FROM vehicles WHERE id = ? AND user_id = ?
+                """;
+        String maintenanceRecordsQuery = """
+                DELETE FROM maintenance_records WHERE vehicle_id = ?
+                """;
+        try {
+            conn.setAutoCommit(false);
+
+            try (PreparedStatement stmt = conn.prepareStatement(maintenanceRecordsQuery)) {
+                stmt.setString(1, id.toString());
+
+                stmt.executeUpdate();
+
+            }
+
+            try (PreparedStatement stmt = conn.prepareStatement(vehiclesQuery)) {
+                stmt.setString(1, id.toString());
+                stmt.setString(2, userId.toString());
+    
+                stmt.executeUpdate();
+            }
+
+            conn.commit();
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
         return false;
     }
 
