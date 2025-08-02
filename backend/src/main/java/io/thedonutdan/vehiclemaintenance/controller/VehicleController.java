@@ -34,7 +34,7 @@ public class VehicleController {
     }
 
     @PostMapping
-    public ResponseEntity<String> createVehicle(@RequestBody Vehicle vehicle, @RequestHeader UUID userId) {
+    public ResponseEntity<String> createVehicle(@RequestBody Vehicle vehicle, @RequestHeader("X-User-Id") UUID userId) {
         List<String> errors = VehicleValidator.validate(vehicle);
         if (!errors.isEmpty()) {
             return ResponseEntity.badRequest().body(String.join("\n", errors));

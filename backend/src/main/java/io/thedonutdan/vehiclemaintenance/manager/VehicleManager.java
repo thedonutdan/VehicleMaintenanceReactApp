@@ -7,9 +7,14 @@ import io.thedonutdan.vehiclemaintenance.model.Vehicle;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+@Component
 public class VehicleManager {
     private final VehicleDAO vehicleDAO;
 
+    @Autowired
     public VehicleManager(VehicleDAO vehicleDAO) {
         this.vehicleDAO = vehicleDAO;
     }
@@ -19,7 +24,7 @@ public class VehicleManager {
     }
 
     public Vehicle getVehicleById(UUID vehicleId, UUID userId) {
-        Vehicle v = vehicleDAO.findById(userId);
+        Vehicle v = vehicleDAO.findById(vehicleId);
         if (!v.getUserId().equals(userId)) {
             return null;
         }

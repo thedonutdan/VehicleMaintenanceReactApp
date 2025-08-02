@@ -40,19 +40,10 @@ public class DummyVehicleDAO implements VehicleDAO {
     }
 
     @Override
-    public Vehicle findByIdAndUserId(UUID vehicleId, UUID userId) {
-        return dummmyDB.stream()
-            .filter(v -> v.getId().equals(vehicleId) && v.getUserId().equals(userId))
-            .findFirst()
-            .orElse(null);
-    }
-
-    @Override
-    public boolean update(UUID userId, Vehicle vehicle) {
+    public boolean update(Vehicle vehicle) {
         return dummmyDB.stream()
             .filter(v -> v.equals(vehicle))
             .findFirst()
-            .filter(v -> v.getUserId().equals(userId))
             .map(v -> {
                 dummmyDB.remove(v);
                 dummmyDB.add(vehicle);
@@ -62,11 +53,10 @@ public class DummyVehicleDAO implements VehicleDAO {
     }
 
     @Override
-    public boolean delete(UUID userId, UUID id) {
+    public boolean delete(UUID id) {
         return dummmyDB.stream()
         .filter(v -> v.getId().equals(id))
         .findFirst()
-        .filter(v -> v.getUserId().equals(userId))
         .map(v -> {
             dummmyDB.remove(v);
             return true;

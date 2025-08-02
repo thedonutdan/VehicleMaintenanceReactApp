@@ -9,11 +9,18 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.UUID;
 
+import javax.sql.DataSource;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+@Repository
 public class SQLiteUserDAO implements UserDAO{
     private final Connection conn;
 
-    public SQLiteUserDAO(Connection conn) {
-        this.conn = conn;
+    @Autowired
+    public SQLiteUserDAO(DataSource dataSource) throws SQLException {
+        this.conn = dataSource.getConnection();
     }
 
     @Override

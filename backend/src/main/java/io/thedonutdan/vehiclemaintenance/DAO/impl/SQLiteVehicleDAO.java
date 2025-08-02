@@ -15,12 +15,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-//TODO: move auth up to manager
+import javax.sql.DataSource;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+@Repository
 public class SQLiteVehicleDAO implements VehicleDAO {
     private final Connection conn;
 
-    public SQLiteVehicleDAO(Connection conn) {
-        this.conn = conn;
+    @Autowired
+    public SQLiteVehicleDAO(DataSource dataSource) throws SQLException {
+        this.conn = dataSource.getConnection();
     }
 
     @Override
