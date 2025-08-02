@@ -19,7 +19,7 @@ public class VehicleManager {
     }
 
     public Vehicle getVehicleById(UUID vehicleId, UUID userId) {
-        return vehicleDAO.findByIdAndUserId(vehicleId, userId);
+        return vehicleDAO.findById(vehicleId);
     }
 
     public List<Vehicle> getVehiclesByUserId(UUID userId) {
@@ -35,7 +35,7 @@ public class VehicleManager {
     }
 
     public boolean addMaintenanceRecord(UUID userId, UUID vehicleId, MaintenanceRecord record) {
-        Vehicle vehicle = vehicleDAO.findByIdAndUserId(vehicleId, userId);
+        Vehicle vehicle = vehicleDAO.findById(vehicleId);
         if (vehicle == null) {
             return false;
         }

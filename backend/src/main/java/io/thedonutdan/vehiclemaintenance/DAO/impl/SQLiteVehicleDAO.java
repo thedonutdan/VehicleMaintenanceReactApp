@@ -145,39 +145,6 @@ public class SQLiteVehicleDAO implements VehicleDAO {
     }
 
     @Override
-    public Vehicle findByIdAndUserId(UUID vehicleId, UUID userId) {
-        String query = """
-                SELECT * FROM vehicles WHERE id = ? AND user_id = ?
-                """;
-
-        try (PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setString(1, vehicleId.toString());
-            stmt.setString(2, userId.toString());
-
-            ResultSet rs = stmt.executeQuery();
-
-            if (rs.next()) {
-                Vehicle vehicle = new Vehicle();
-                vehicle.setId(UUID.fromString(rs.getString("id")));
-                vehicle.setUserId(UUID.fromString(rs.getString("user_id")));
-                vehicle.setVIN(rs.getString("vin"));
-                vehicle.setMake(rs.getString("make"));
-                vehicle.setModel(rs.getString("model"));
-                vehicle.setYear(rs.getInt("year"));
-                vehicle.setLicensePlate(rs.getString("license_plate"));
-                vehicle.setMileage(rs.getInt("mileage"));
-                vehicle.setMaintenanceHistory(getMaintenanceRecords(vehicleId));
-
-                return vehicle;
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return null;
-    }
-
-    @Override
     public boolean update(UUID userId, Vehicle vehicle) {
         String deleteVehiclesQuery = """
             DELETE FROM vehicles WHERE id = ? AND user_id = ?
