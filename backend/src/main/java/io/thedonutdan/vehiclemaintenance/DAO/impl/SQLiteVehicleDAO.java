@@ -139,15 +139,16 @@ public class SQLiteVehicleDAO implements VehicleDAO {
         return null;
     }
 
+    //TODO implement this method
     @Override
     public List<Vehicle> findByUserId(UUID userId) {
         return List.of();
     }
 
     @Override
-    public boolean update(UUID userId, Vehicle vehicle) {
+    public boolean update(Vehicle vehicle) {
         String deleteVehiclesQuery = """
-            DELETE FROM vehicles WHERE id = ? AND user_id = ?
+            DELETE FROM vehicles WHERE id = ?
             """;
         String deleteMaintenanceRecordsQuery = """
             DELETE FROM maintenance_records WHERE vehicle_id = ?
@@ -163,7 +164,6 @@ public class SQLiteVehicleDAO implements VehicleDAO {
 
             try (PreparedStatement stmt = conn.prepareStatement(deleteVehiclesQuery)) {
                 stmt.setString(1, vehicle.getId().toString());
-                stmt.setString(2, userId.toString());
 
                 executeStrictUpdate(stmt, 1);
             }
@@ -187,9 +187,9 @@ public class SQLiteVehicleDAO implements VehicleDAO {
     }
 
     @Override
-    public boolean delete(UUID userId, UUID id) {
+    public boolean delete(UUID id) {
         String vehiclesQuery = """
-                DELETE FROM vehicles WHERE id = ? AND user_id = ?
+                DELETE FROM vehicles WHERE id = ?
                 """;
         String maintenanceRecordsQuery = """
                 DELETE FROM maintenance_records WHERE vehicle_id = ?
@@ -206,7 +206,6 @@ public class SQLiteVehicleDAO implements VehicleDAO {
 
             try (PreparedStatement stmt = conn.prepareStatement(vehiclesQuery)) {
                 stmt.setString(1, id.toString());
-                stmt.setString(2, userId.toString());
     
                 stmt.executeUpdate();
             }

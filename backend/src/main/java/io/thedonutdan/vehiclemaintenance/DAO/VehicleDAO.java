@@ -9,6 +9,6 @@ public interface VehicleDAO {
     public boolean insert(Vehicle vehicle);
     public Vehicle findById(UUID id);
     public List<Vehicle> findByUserId(UUID id);
-    public boolean update(UUID userId, Vehicle vehicle);
-    public boolean delete(UUID userId, UUID id);
+    public boolean update(Vehicle vehicle);
+    public boolean delete(UUID id);
 }

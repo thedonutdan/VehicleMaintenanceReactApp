@@ -19,7 +19,11 @@ public class VehicleManager {
     }
 
     public Vehicle getVehicleById(UUID vehicleId, UUID userId) {
-        return vehicleDAO.findById(vehicleId);
+        Vehicle v = vehicleDAO.findById(userId);
+        if (!v.getUserId().equals(userId)) {
+            return null;
+        }
+        return v;
     }
 
     public List<Vehicle> getVehiclesByUserId(UUID userId) {
@@ -27,20 +31,30 @@ public class VehicleManager {
     }
 
     public boolean updateVehicle(UUID userId, Vehicle vehicle) {
-        return vehicleDAO.update(userId, vehicle);
+        Vehicle existing = vehicleDAO.findById(vehicle.getId());
+        if (existing == null || !existing.getUserId().equals(userId)) {
+            return false;
+        }
+        vehicle.setUserId(userId);
+        return vehicleDAO.update(vehicle);
     }
 
     public boolean deleteVehicle(UUID userId, UUID vehicleId) {
-        return vehicleDAO.delete(userId, vehicleId);
+        Vehicle existing = vehicleDAO.findById(vehicleId);
+        if (existing == null || !existing.getUserId().equals(userId)) {
+            return false;
+        }
+
+        return vehicleDAO.delete(vehicleId);
     }
 
     public boolean addMaintenanceRecord(UUID userId, UUID vehicleId, MaintenanceRecord record) {
         Vehicle vehicle = vehicleDAO.findById(vehicleId);
-        if (vehicle == null) {
+        if (vehicle == null || !vehicle.getUserId().equals(userId)) {
             return false;
         }
 
         vehicle.addMaintenance(record);
-        return vehicleDAO.update(userId, vehicle);
+        return vehicleDAO.update(vehicle);
     }
 }
