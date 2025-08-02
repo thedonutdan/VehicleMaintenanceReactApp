@@ -142,7 +142,39 @@ public class SQLiteVehicleDAO implements VehicleDAO {
     //TODO implement this method
     @Override
     public List<Vehicle> findByUserId(UUID userId) {
-        return List.of();
+        String vehiclesQuery = """
+                SELECT * FROM vehicles WHERE user_id = ?
+                """;
+        String maintenanceRecordsQuery = """
+                SELECT * FROM maintenance_records WHERE vehicle_id = ?
+                """;
+        List<Vehicle> vehicles = new ArrayList<>();
+
+        try (PreparedStatement stmt = conn.prepareStatement(vehiclesQuery)) {
+            stmt.setString(1, userId.toString());
+
+            ResultSet rs = stmt.executeQuery();
+
+            while(rs.next()) {
+                Vehicle vehicle = new Vehicle();
+                vehicle.setId(UUID.fromString(rs.getString("id")));
+                vehicle.setUserId(UUID.fromString(rs.getString("user_id")));
+                vehicle.setVIN(rs.getString("vin"));
+                vehicle.setMake(rs.getString("make"));
+                vehicle.setModel(rs.getString("model"));
+                vehicle.setYear(rs.getInt("year"));
+                vehicle.setLicensePlate(rs.getString("license_plate"));
+                vehicle.setMileage(rs.getInt("mileage"));
+                vehicle.setMaintenanceHistory(getMaintenanceRecords(vehicle.getId()));
+
+                vehicles.add(vehicle);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return vehicles;
     }
 
     @Override
