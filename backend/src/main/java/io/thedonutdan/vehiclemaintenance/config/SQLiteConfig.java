@@ -6,7 +6,6 @@ import org.sqlite.JDBC;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 
 import javax.sql.DataSource;
-import java.sql.Driver;
 
 @Configuration
 public class SQLiteConfig {

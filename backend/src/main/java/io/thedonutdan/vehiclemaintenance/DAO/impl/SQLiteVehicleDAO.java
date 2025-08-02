@@ -145,14 +145,10 @@ public class SQLiteVehicleDAO implements VehicleDAO {
         return null;
     }
 
-    //TODO implement this method
     @Override
     public List<Vehicle> findByUserId(UUID userId) {
         String vehiclesQuery = """
                 SELECT * FROM vehicles WHERE user_id = ?
-                """;
-        String maintenanceRecordsQuery = """
-                SELECT * FROM maintenance_records WHERE vehicle_id = ?
                 """;
         List<Vehicle> vehicles = new ArrayList<>();
 
