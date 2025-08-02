@@ -6,7 +6,7 @@ import io.thedonutdan.vehiclemaintenance.model.Vehicle;
 
 import java.util.List;
 import java.util.UUID;
-//TODO add auth here and validation in controller
+
 public class VehicleManager {
     private final VehicleDAO vehicleDAO;
 
