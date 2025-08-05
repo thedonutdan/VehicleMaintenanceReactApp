@@ -4,6 +4,9 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.util.Objects;
 
+/**
+ * Represents a record of a specific maintenance performed on a vehicle
+ */
 public class MaintenanceRecord {
     private LocalDate date;
     private ServiceType serviceType;

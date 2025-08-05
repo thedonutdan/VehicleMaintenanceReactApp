@@ -10,6 +10,9 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+/**
+ * Manages validated requests from control and provides authorization for database access. Creates, reads, updates, and deletes vehicles.
+ */
 @Component
 public class VehicleManager {
     private final VehicleDAO vehicleDAO;
@@ -19,10 +22,20 @@ public class VehicleManager {
         this.vehicleDAO = vehicleDAO;
     }
 
+    /**
+     * Adds a vehicle to the database
+     * @param vehicle Vehicle to be added to database
+     */
     public void addVehicle(Vehicle vehicle) {
         vehicleDAO.insert(vehicle);
     }
 
+    /**
+     * Retrieves a vehicle from the database
+     * @param vehicleId id of vehicle to be retrieved
+     * @param userId id of associated user, must be validated
+     * @return Vehicle object if it exists and user is authorized, null otherwise
+     */
     public Vehicle getVehicleById(UUID vehicleId, UUID userId) {
         Vehicle v = vehicleDAO.findById(vehicleId);
         if (!v.getUserId().equals(userId)) {
@@ -31,10 +44,21 @@ public class VehicleManager {
         return v;
     }
 
+    /**
+     * Retrieves all vehicle associated with given user id
+     * @param userId User id to retrieve vehicles for
+     * @return List of vehicles associated with given user id
+     */
     public List<Vehicle> getVehiclesByUserId(UUID userId) {
         return vehicleDAO.findByUserId(userId);
     }
 
+    /**
+     * Updates a vehicle in the database
+     * @param userId User id associated with vehicle
+     * @param vehicle Updated vehicle object
+     * @return True if update is successful, null if update is unsuccessful or user is not authorized
+     */
     public boolean updateVehicle(UUID userId, Vehicle vehicle) {
         Vehicle existing = vehicleDAO.findById(vehicle.getId());
         if (existing == null || !existing.getUserId().equals(userId)) {
@@ -44,6 +68,12 @@ public class VehicleManager {
         return vehicleDAO.update(vehicle);
     }
 
+    /**
+     * Removes a vehicle from the database
+     * @param userId Associated user id used for authorization
+     * @param vehicleId Id of vehicle to be removed
+     * @return True on successful removal, false on failure or if user is not authorized
+     */
     public boolean deleteVehicle(UUID userId, UUID vehicleId) {
         Vehicle existing = vehicleDAO.findById(vehicleId);
         if (existing == null || !existing.getUserId().equals(userId)) {
@@ -53,6 +83,13 @@ public class VehicleManager {
         return vehicleDAO.delete(vehicleId);
     }
 
+    /**
+     * Adds a maintenance record to a vehicle in the database
+     * @param userId Associated user id for authorization
+     * @param vehicleId Id of vehicle to add maintenance record to
+     * @param record Record object to be added to vehicle
+     * @return True upon successful update, false on failure or if user is not authorized
+     */
     public boolean addMaintenanceRecord(UUID userId, UUID vehicleId, MaintenanceRecord record) {
         Vehicle vehicle = vehicleDAO.findById(vehicleId);
         if (vehicle == null || !vehicle.getUserId().equals(userId)) {

@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
+/**
+ * Controller for authorization. Handles user registration and logon
+ */
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
@@ -23,6 +26,11 @@ public class AuthController {
         this.passwordEncoder = passwordEncoder;
     }
 
+    /**
+     * Registers a new user with given username and password
+     * @param req the registration request containing username and password
+     * @return HTTP 200 if successful, 409 if username exists
+     */
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody RegisterRequest req) {
         if (userDAO.findByUsername(req.getUsername()) != null) {

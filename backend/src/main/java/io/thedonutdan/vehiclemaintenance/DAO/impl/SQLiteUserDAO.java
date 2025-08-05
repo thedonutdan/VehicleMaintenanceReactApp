@@ -14,6 +14,9 @@ import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+/**
+ * User data access object for SQLite configuration
+ */
 @Repository
 public class SQLiteUserDAO implements UserDAO{
     private final Connection conn;

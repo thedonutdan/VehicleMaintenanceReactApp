@@ -1,5 +1,8 @@
 package io.thedonutdan.vehiclemaintenance.DTO;
 
+/**
+ * Data transfer object containing user registration information (username and password)
+ */
 public class RegisterRequest {
     private String username;
     private String password;

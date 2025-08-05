@@ -5,6 +5,9 @@ import io.thedonutdan.vehiclemaintenance.model.MaintenanceRecord;
 import java.util.List;
 import java.util.ArrayList;
 
+/**
+ * Provides validation utilities for MaintenanceRecord objects
+ */
 public class MaintenanceRecordValidator {
     public static List<String> validate(MaintenanceRecord record) {
         List<String> errors = new ArrayList<>();

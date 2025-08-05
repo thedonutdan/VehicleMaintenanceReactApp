@@ -20,6 +20,9 @@ import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+/**
+ * Vehicle Data Access Object for SQLite configuration
+ */
 @Repository
 public class SQLiteVehicleDAO implements VehicleDAO {
     private final Connection conn;

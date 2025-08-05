@@ -5,6 +5,9 @@ import java.util.List;
 
 import io.thedonutdan.vehiclemaintenance.model.Vehicle;
 
+/**
+ * Provides validation utilities for Vehicle objects
+ */
 public class VehicleValidator {
     public static List<String> validate(Vehicle vehicle) {
         List<String> errors = new ArrayList<>();

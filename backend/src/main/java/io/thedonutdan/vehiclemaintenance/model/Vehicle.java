@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
-/* Represents a vehicle that is being monitored */
+/** Represents a vehicle that is being monitored */
 public class Vehicle {
     private UUID id;
     private UUID userId;
@@ -18,7 +18,7 @@ public class Vehicle {
     private int mileage;
     private List<MaintenanceRecord> maintenanceHistory;
 
-    /* For JSON serialization/deserialization */
+    /** For JSON serialization/deserialization */
     public Vehicle() {
 
     }
@@ -119,7 +119,10 @@ public class Vehicle {
         this.maintenanceHistory = records;
     }
 
-    /* Adds a maintenance record to the vehicle, will update vehicle mileage if new */
+    /**
+     *  Adds a maintenance record to the vehicle, will update vehicle mileage if new 
+     * @param record Maintenance record to be added to vehicle
+    */
     public void addMaintenance(MaintenanceRecord record) {
         maintenanceHistory.add(record);
         if (record.getMileage() > mileage) {

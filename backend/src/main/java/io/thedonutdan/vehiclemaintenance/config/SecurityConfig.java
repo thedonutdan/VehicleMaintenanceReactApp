@@ -9,7 +9,9 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
+/**
+ * Spring boot security configuration
+ */
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -18,7 +20,7 @@ public class SecurityConfig {
         http
             .authorizeHttpRequests((authorize) -> authorize
                 .requestMatchers("/api/public/**").permitAll()
-                .anyRequest().permitAll()
+                .anyRequest().permitAll() // Permit all access for now, will add security after confirming proper integration with front end
             )
             .httpBasic(Customizer.withDefaults())
             .csrf(AbstractHttpConfigurer::disable);

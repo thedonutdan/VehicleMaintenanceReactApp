@@ -3,6 +3,9 @@ package io.thedonutdan.vehiclemaintenance.model;
 import java.time.Period;
 import java.util.Objects;
 
+/**
+ * Represents a Service Type with optional default expiry miles and time
+ */
 public class ServiceType {
     private String name;
     private Integer defaultExpiryMiles;

@@ -2,6 +2,9 @@ package io.thedonutdan.vehiclemaintenance.model;
 
 import java.util.UUID;
 
+/**
+ * Represents a user
+ */
 public class User {
     private UUID userId;
     private String username;

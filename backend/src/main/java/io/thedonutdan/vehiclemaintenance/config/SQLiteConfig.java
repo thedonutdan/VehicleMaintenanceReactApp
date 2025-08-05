@@ -7,6 +7,9 @@ import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 
 import javax.sql.DataSource;
 
+/**
+ * SQLite DataSource for Spring Boot
+ */
 @Configuration
 public class SQLiteConfig {
     @Bean
