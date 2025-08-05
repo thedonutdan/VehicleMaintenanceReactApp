@@ -1,6 +1,7 @@
 package io.thedonutdan.vehiclemaintenance.DTO;
 
 import io.thedonutdan.vehiclemaintenance.model.MaintenanceRecord;
+import io.thedonutdan.vehiclemaintenance.model.Vehicle;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,6 +44,19 @@ public class VehicleDTO {
         this.licensePlate = licensePlate;
         this.mileage = mileage;
         this.maintenanceHistory = maintenanceHistory;
+    }
+
+    public static VehicleDTO from(Vehicle v) {
+        VehicleDTO dto = new VehicleDTO();
+        dto.setId(v.getId());
+        dto.setVIN(v.getVIN());
+        dto.setMake(v.getMake());
+        dto.setModel(v.getModel());
+        dto.setYear(v.getYear());
+        dto.setLicensePlate(v.getLicensePlate());
+        dto.setMileage(v.getMileage());
+        dto.setMaintenanceHistory(v.getMaintenanceHistory());
+        return dto;
     }
 
     public UUID getId() {
