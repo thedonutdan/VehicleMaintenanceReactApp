@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import io.thedonutdan.vehiclemaintenance.model.Vehicle;
 import io.thedonutdan.vehiclemaintenance.DAO.DummyVehicleDAO;
+import io.thedonutdan.vehiclemaintenance.DAO.VehicleDAO;
 import io.thedonutdan.vehiclemaintenance.model.MaintenanceRecord;
 import io.thedonutdan.vehiclemaintenance.model.ServiceType;
 
@@ -15,7 +16,7 @@ import java.time.Period;
 
 public class VehicleManagerTest {
     private VehicleManager manager;
-    private DummyVehicleDAO dao;
+    private VehicleDAO dao;
     
     @BeforeEach
     public void setup() {
