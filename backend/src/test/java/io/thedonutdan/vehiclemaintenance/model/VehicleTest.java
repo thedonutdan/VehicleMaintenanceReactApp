@@ -53,7 +53,7 @@ public class VehicleTest {
     }
 
     @Test
-    public void testAddOldMaintenance() {
+    public void testAddOldMaintenance_ShouldNotUpdateMileage() {
         LocalDate date = LocalDate.of(2025, 7, 1);
         ServiceType st = new ServiceType("Oil Change", 5000, Period.ofMonths(6));
         MaintenanceRecord record = new MaintenanceRecord(date, st, 10000, null, null, "5W-30");
@@ -68,7 +68,7 @@ public class VehicleTest {
     }
 
     @Test
-    public void testAddNewMaintenance() {
+    public void testAddNewMaintenance_ShouldUpdateMileage() {
         LocalDate date = LocalDate.of(2025, 7, 1);
         ServiceType st = new ServiceType("Oil Change", 5000, Period.ofMonths(6));
         MaintenanceRecord record = new MaintenanceRecord(date, st, 100000, null, null, "5W-30");
@@ -100,5 +100,47 @@ public class VehicleTest {
         assertEquals(original.getMaintenanceHistory(), deserialized.getMaintenanceHistory());
         assertEquals(original.getMileage(), deserialized.getMileage());
         assertEquals(original.getLicensePlate(), deserialized.getLicensePlate());
+    }
+
+    @Test
+    public void testEquals() {
+        UUID id = UUID.randomUUID();
+        Vehicle v1 = new Vehicle(UUID.randomUUID(), "VIN123", "Honda", "Civic", 2020, "ABC123", 50000);
+        v1.setId(id);
+        
+        Vehicle v2 = new Vehicle(UUID.randomUUID(), "VIN456", "Toyota", "Camry", 2021, "XYZ789", 60000);
+        v2.setId(id);
+        
+        assertEquals(v1, v2);
+        
+        v2.setId(UUID.randomUUID());
+        assertNotEquals(v1, v2);
+    }
+
+    @Test
+    public void testHashCode() {
+        UUID id = UUID.randomUUID();
+        Vehicle v = new Vehicle(UUID.randomUUID(), "VIN123", "Honda", "Civic", 2020, "ABC123", 50000);
+        v.setId(id);
+        
+        assertEquals(id.hashCode(), v.hashCode());
+    }
+
+    @Test 
+    public void testToString() {
+        UUID id = UUID.randomUUID();
+        UUID userId = UUID.randomUUID();
+        Vehicle v = new Vehicle(userId, "VIN123", "Honda", "Civic", 2020, "ABC123", 50000);
+        v.setId(id);
+        
+        String str = v.toString();
+        assertTrue(str.contains(id.toString()));
+        assertTrue(str.contains(userId.toString()));
+        assertTrue(str.contains("VIN123"));
+        assertTrue(str.contains("Honda"));
+        assertTrue(str.contains("Civic"));
+        assertTrue(str.contains("2020"));
+        assertTrue(str.contains("ABC123"));
+        assertTrue(str.contains("50000"));
     }
 }
