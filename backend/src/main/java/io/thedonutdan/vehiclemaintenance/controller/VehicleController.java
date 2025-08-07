@@ -54,8 +54,12 @@ public class VehicleController {
         }
 
         v.setUserId(userId);
-        vehicleManager.addVehicle(v);
-        return ResponseEntity.status(HttpStatus.CREATED).body("Vehicle created");
+        boolean success = vehicleManager.addVehicle(v, userId);
+        if (success){
+            return ResponseEntity.status(HttpStatus.CREATED).body("Vehicle created");
+        } else {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Vehicle not authorized");
+        }
     }
 
     /**
