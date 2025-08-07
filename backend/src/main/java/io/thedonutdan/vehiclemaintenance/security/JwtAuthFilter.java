@@ -10,6 +10,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import io.jsonwebtoken.JwtException;
+import io.micrometer.common.lang.NonNull;
 import io.thedonutdan.vehiclemaintenance.DAO.UserDAO;
 import io.thedonutdan.vehiclemaintenance.model.User;
 import jakarta.servlet.FilterChain;
@@ -29,9 +30,9 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(
-        HttpServletRequest request,
-        HttpServletResponse response,
-        FilterChain filterChain
+        @NonNull HttpServletRequest request,
+        @NonNull HttpServletResponse response,
+        @NonNull FilterChain filterChain
     ) throws ServletException, IOException {
         if (request.getCookies() != null) {
             for (Cookie c : request.getCookies()) {
