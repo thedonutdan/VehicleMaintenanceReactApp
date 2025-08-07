@@ -25,6 +25,7 @@ public class VehicleManager {
     /**
      * Adds a vehicle to the database
      * @param vehicle Vehicle to be added to database
+     * @param userId Id of user associated with vehicle
      */
     public boolean addVehicle(Vehicle vehicle, UUID userId) {
         if (!vehicle.getUserId().equals(userId)) {
