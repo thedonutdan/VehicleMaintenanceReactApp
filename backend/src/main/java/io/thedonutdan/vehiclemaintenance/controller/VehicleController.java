@@ -5,13 +5,13 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -23,7 +23,6 @@ import io.thedonutdan.vehiclemaintenance.validation.MaintenanceRecordValidator;
 import io.thedonutdan.vehiclemaintenance.validation.VehicleValidator;
 
 import java.util.UUID;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 /**
@@ -46,7 +45,8 @@ public class VehicleController {
      * @return HTTP 201 if vehicle is created successfully, 400 if vehicle object is malformed
      */
     @PostMapping
-    public ResponseEntity<String> createVehicle(@RequestBody VehicleDTO dto, @RequestHeader("X-User-Id") UUID userId) {
+    public ResponseEntity<String> createVehicle(@RequestBody VehicleDTO dto, Authentication auth) {
+        UUID userId = (UUID) auth.getPrincipal();
         Vehicle v = Vehicle.from(dto, userId);
         List<String> errors = VehicleValidator.validate(v);
         if (!errors.isEmpty()) {
@@ -65,7 +65,8 @@ public class VehicleController {
      * @return HTTP 404 if vehicle does not exist, vehicle DTO and HTTP 200 if vehicle is found
      */
     @GetMapping("/{vehicleId}")
-    public ResponseEntity<VehicleDTO> getVehicle(@PathVariable UUID vehicleId, @RequestHeader("X-User-Id") UUID userId) {
+    public ResponseEntity<VehicleDTO> getVehicle(@PathVariable UUID vehicleId, Authentication auth) {
+        UUID userId = (UUID) auth.getPrincipal();
         Vehicle v = vehicleManager.getVehicleById(vehicleId, userId);
         if (v == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
@@ -79,7 +80,8 @@ public class VehicleController {
      * @return HTTP 200 and list of vehicle DTOs associated with user id
      */
     @GetMapping
-    public ResponseEntity<List<VehicleDTO>> getVehiclesByUserId(@RequestHeader("X-User-Id") UUID userId) {
+    public ResponseEntity<List<VehicleDTO>> getVehiclesByUserId(Authentication auth) {
+        UUID userId = (UUID) auth.getPrincipal();
         List<Vehicle> vehicles = vehicleManager.getVehiclesByUserId(userId);
         return ResponseEntity.ok(vehicles.stream()
                                         .map(VehicleDTO::from)
@@ -97,12 +99,14 @@ public class VehicleController {
     @PutMapping("/{vehicleId}")
     public ResponseEntity<String> updateVehicle(
             @PathVariable UUID vehicleId,
-            @RequestHeader("X-User-Id") UUID userId,
+            Authentication auth,
             @RequestBody VehicleDTO dto
         ) {
         if (!vehicleId.equals(dto.getId())) {
             return ResponseEntity.badRequest().body("Vehicle ID mismatch");
         }
+
+        UUID userId = (UUID) auth.getPrincipal();
 
         Vehicle v = Vehicle.from(dto, userId);
 
@@ -128,8 +132,9 @@ public class VehicleController {
     @DeleteMapping("/{vehicleId}")
     public ResponseEntity<String> deleteVehicle(
             @PathVariable UUID vehicleId,
-            @RequestHeader("X-User-Id") UUID userId
+            Authentication auth
         ) {
+        UUID userId = (UUID) auth.getPrincipal();
         boolean success = vehicleManager.deleteVehicle(userId, vehicleId);
         if (!success) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Vehicle not found or not authorized");
@@ -148,14 +153,15 @@ public class VehicleController {
     @PostMapping("/{vehicleId}/maintenance")
     public ResponseEntity<String> addMaintenanceRecord(
             @PathVariable UUID vehicleId,
-            @RequestHeader("X-User-Id") UUID userId,
+            Authentication auth,
             @RequestBody MaintenanceRecord record
         ) {
         List<String> errors = MaintenanceRecordValidator.validate(record);
         if (!errors.isEmpty()) {
             return ResponseEntity.badRequest().body(String.join("\n", errors));
         }
-
+        
+        UUID userId = (UUID) auth.getPrincipal();
         boolean success = vehicleManager.addMaintenanceRecord(userId, vehicleId, record);
         if (!success) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Vehicle not found or not authorized");
