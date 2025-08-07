@@ -5,6 +5,7 @@ import java.io.IOException;
 
 import java.util.UUID;
 
+import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -34,21 +35,25 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         @NonNull HttpServletResponse response,
         @NonNull FilterChain filterChain
     ) throws ServletException, IOException {
-        if (request.getCookies() != null) {
-            for (Cookie c : request.getCookies()) {
-                if ("jwt".equals(c.getName())) {
-                    try {
-                        UUID userId = jwtUtil.parseToken(c.getValue());
-                        User user = userDAO.findById(userId);
-                        if (user != null) {
-                            var auth = new UsernamePasswordAuthenticationToken(user.getUserId(), null);
-                            SecurityContextHolder.getContext().setAuthentication(auth);
-                        }
-                    } catch (JwtException | IllegalArgumentException e) {
+        try {
+            if (request.getCookies() != null) {
+                for (Cookie c : request.getCookies()) {
+                    if ("jwt".equals(c.getName())) {
+                        try {
+                            UUID userId = jwtUtil.parseToken(c.getValue());
+                            User user = userDAO.findById(userId);
+                            if (user != null) {
+                                var auth = new UsernamePasswordAuthenticationToken(user.getUserId(), null);
+                                SecurityContextHolder.getContext().setAuthentication(auth);
+                            }
+                        } catch (JwtException | IllegalArgumentException e) {
 
+                        }
                     }
                 }
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         filterChain.doFilter(request, response);
     }
