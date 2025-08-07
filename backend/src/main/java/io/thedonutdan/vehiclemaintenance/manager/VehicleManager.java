@@ -26,8 +26,12 @@ public class VehicleManager {
      * Adds a vehicle to the database
      * @param vehicle Vehicle to be added to database
      */
-    public void addVehicle(Vehicle vehicle) {
-        vehicleDAO.insert(vehicle);
+    public boolean addVehicle(Vehicle vehicle, UUID userId) {
+        if (!vehicle.getUserId().equals(userId)) {
+            return false;
+        } else {
+            return vehicleDAO.insert(vehicle);
+        }
     }
 
     /**
