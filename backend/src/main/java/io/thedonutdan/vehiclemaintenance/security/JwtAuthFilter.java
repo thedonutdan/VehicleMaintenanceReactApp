@@ -3,6 +3,7 @@ package io.thedonutdan.vehiclemaintenance.security;
 import java.io.IOError;
 import java.io.IOException;
 
+import java.util.Collections;
 import java.util.UUID;
 
 import org.springframework.context.annotation.Bean;
@@ -43,8 +44,12 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                             UUID userId = jwtUtil.parseToken(c.getValue());
                             User user = userDAO.findById(userId);
                             if (user != null) {
-                                var auth = new UsernamePasswordAuthenticationToken(user.getUserId(), null);
-                                SecurityContextHolder.getContext().setAuthentication(auth);
+                                var auth = new UsernamePasswordAuthenticationToken(
+                                user.getUserId(),
+                                null,
+                                Collections.emptyList() // or user roles: List.of(new SimpleGrantedAuthority("ROLE_USER"))
+                            );
+                            SecurityContextHolder.getContext().setAuthentication(auth);
                             }
                         } catch (JwtException | IllegalArgumentException e) {
 

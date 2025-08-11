@@ -19,6 +19,7 @@ public class CorsConfig {
                     .allowedOrigins("http://localhost:5173") // Your frontend dev server
                     .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                     .allowedHeaders("*")
+                    .exposedHeaders("X-Vehicle-Id")
                     .allowCredentials(true)
                     .maxAge(3600);
             }

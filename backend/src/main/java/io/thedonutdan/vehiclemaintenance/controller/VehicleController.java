@@ -54,9 +54,14 @@ public class VehicleController {
         }
 
         v.setUserId(userId);
+        UUID vehicleId = UUID.randomUUID();
+        v.setId(vehicleId);
         boolean success = vehicleManager.addVehicle(v, userId);
         if (success){
-            return ResponseEntity.status(HttpStatus.CREATED).body("Vehicle created");
+            return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .header("X-Vehicle-Id", vehicleId.toString())
+                .body("Vehicle created ");
         } else {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Vehicle not authorized");
         }

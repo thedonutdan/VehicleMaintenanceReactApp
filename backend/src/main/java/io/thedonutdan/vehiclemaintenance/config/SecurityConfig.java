@@ -1,5 +1,10 @@
 package io.thedonutdan.vehiclemaintenance.config;
 
+import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.config.Customizer;
+import jakarta.servlet.http.HttpServletResponse;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -25,12 +30,19 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http, JwtAuthFilter jwtAuthFilter) throws Exception {
         http
             .csrf(AbstractHttpConfigurer::disable)
-            .authorizeHttpRequests((authorize) -> authorize
+            .cors(Customizer.withDefaults())                           // use your CorsConfig
+            .sessionManagement(sm -> sm.sessionCreationPolicy(STATELESS))
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()// preflight
                 .requestMatchers("/api/public/**", "/auth/**").permitAll()
-                .anyRequest().authenticated() // Permit all access for now, will add security after confirming proper integration with front end
+                .anyRequest().authenticated()                          // protect the rest
+            )
+            .exceptionHandling(e -> e
+                .authenticationEntryPoint((req,res,ex) -> res.sendError(HttpServletResponse.SC_UNAUTHORIZED))
+                .accessDeniedHandler((req,res,ex) -> res.sendError(HttpServletResponse.SC_FORBIDDEN))
             )
             .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
-        
+
         return http.build();
     }
 
